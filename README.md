@@ -62,13 +62,13 @@ For instance, you need to make some survey about pictures in `C:\pictures` by le
 # Technical information
 ## Libraries and tools
 During the implementation development I used the next tools and frameworks:
-*__OS__: Microsoft Windows 8.1
-*__IDE__/__compiler__: Microsoft Visual Studio 2015
-*__Additional libraries__: 
+* __OS__: Microsoft Windows 8.1
+* __IDE__/__compiler__: Microsoft Visual Studio 2015
+* __Additional libraries__: 
   boost 1.60.0b
   opencv 3.2
   rapidjson 1.1.0
-*__WinAPI__: a couple of WinApi functions were leveraged during call functions from DLL file.
+* __WinAPI__: a couple of WinApi functions were leveraged during call functions from DLL file.
 
 ## Main components of the solution
 The solution is represented by a library file FaceDetectionLib.dll and laucher Detector.exe.
