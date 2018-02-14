@@ -91,7 +91,7 @@ It saves main logic for the program execution. The library includes a few files:
  The file also the analysis process by method `run()`. Main parameters for the detection are quantity of threads (default value is 2) and list of paths to pictures for faces detection. 
  4. ImageProcessing.cpp. It executes function of facial elements detection. The "found faces" are being saved into their own personal files and some data about faces is being stored inside result.json file. The unit also contains some auxiliary methods making some file operations (removal files management)
  
- ## Directories description
+ ## Directories
  1. Detector. Saves the laucnher's source codes
  2. FaceDescriptionLib. Contains the library program codes
  3. LaunchTheProgram. Binary files of the library and the laucner are in the directory. The binaries are compiled for x86 and x64 architecture and located in their own "architectural" directories x86 and x64 respectively. Datasets and about 10 image files are represented in those directories too.
