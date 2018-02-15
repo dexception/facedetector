@@ -1,6 +1,6 @@
 
 ### A couple of introductory words
-The English langualge isn't a native one for me. Hence, the text below might contain some gramatical or lexical mistakes.
+The English language isn't a native one for me. Hence, the text below might contain some gramatical or lexical mistakes.
 
 # Description
 ## About
@@ -65,9 +65,9 @@ During the implementation development I used the next tools and frameworks:
 * __OS__: Microsoft Windows 8.1
 * __IDE__/__compiler__: Microsoft Visual Studio 2015
 * __Additional libraries__: 
-  boost 1.60.0b
-  opencv 3.2
-  rapidjson 1.1.0
+  -boost 1.60.0
+  -opencv 3.2
+  -rapidjson 1.1.0
 * __WinAPI__: a couple of WinApi functions were leveraged during call functions from DLL file.
 
 ## Main components of the solution
