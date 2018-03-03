@@ -8,14 +8,14 @@
 	#else
 	#define FACE_DETECTOR __declspec(dllimport)
 	#endif
-#elif defined(__GNUC__)
-#define FACE_DETECTOR __attribute__((visibility("default")))
-#define FACE_DETECTOR
+//#elif defined(__GNUC__)
+//    #define FACE_DETECTOR __attribute__((visibility("default")))
+//    #define FACE_DETECTOR
 #else
 //  need to analyze deeper the case building the solution by different complers
-#define FACE_DETECTOR
-#define FACE_DETECTOR
-#pragma warning Unknown dynamic link import/export semantics.
+    #define FACE_DETECTOR
+    #define FACE_DETECTOR
+    #pragma warning Unknown dynamic link import/export semantics.
 #endif
 
 #include "opencv2/highgui.hpp"
@@ -110,7 +110,7 @@ namespace FaceDetector {
 		static void concatenateJsons(vector<string>&);
 
 		// Returns quantity of found files
-		static atomic_int getFoundFiles();
+		static int getFoundFiles();
 
 	private:
 		static string imageFile;
@@ -143,13 +143,16 @@ namespace FaceDetector {
 		static void getFacesDetailsInJSON(const string, map<string, vector<string> >);
 
 		// Increments counter of found correct files
-		static void incrementFoundFile(atomic_int);
+		//static void incrementFoundFile(atomic_int);
+		static void incrementFoundFile();
 
 		// Removes temporary json files
 		static void removeTempJSONFiles(vector<string>);
 	};	
 }
 
+#if defined (_WIN32) || (_WIN64)
 extern "C" {
 	FACE_DETECTOR GenericPreparation* _cdecl Preparation(string, string, string, string, string, vector<string>, int);
 };
+#endif

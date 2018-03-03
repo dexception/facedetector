@@ -1,6 +1,7 @@
 // dllmain.cpp: определяет точку входа для приложения DLL.
 #include "stdafx.h"
 
+#if (_WIN32) || (_WIN64)
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -16,4 +17,4 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	return TRUE;
 }
-
+#endif

@@ -1,7 +1,7 @@
 // Detector.cpp: определяет точку входа для консольного приложения.
 //
-
 #include "stdafx.h"
+
 #include <iostream>
 #include <sstream>      
 #include <vector>
@@ -16,7 +16,12 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-#include <windows.h>
+#if defined (_WIN32) || (_WIN64)
+  #include <windows.h>
+#else
+  #include <dlfcn.h>
+#endif
+
 #include "GenericDetector.h"
 
 using namespace std;
@@ -24,8 +29,11 @@ using namespace boost;
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
-
-typedef GenericPreparation* (*PREP) (string, string, string, string, string, vector<string>, int);
+#if defined (_WIN32) || (_WIN64)
+    typedef GenericPreparation* (*PREP) (string, string, string, string, string, vector<string>, int);
+#else
+    typedef GenericPreparation* PREP(string, string, string, string, string, vector<string>, int);
+#endif
 
 // Parses command line arguments
 template<class T>
@@ -174,6 +182,7 @@ int main(int ac, char* av[])
 	cout << endl;
 	cout << endl;
 
+        #if defined (_WIN32) || (_WIN64)
 	TCHAR currentDir[MAX_PATH];
 	GetCurrentDirectory(sizeof(currentDir), currentDir);
 		
@@ -186,6 +195,14 @@ int main(int ac, char* av[])
 		cout << "Can't find FaceDetectorLib.dll file. Exit!" << endl;
 		return 1;
 	}
+        #else
+        void* handle = dlopen("./libFaceDetectorLib.so", RTLD_LAZY); 
+	
+        if (!handle) {		
+		cout << "Can't find libFaceDetectorLib.so file. Exit!" << endl;
+		return 1;
+	}
+        #endif
 			
 	//Parses command line arguments and pushes it to map
 	map<string, string> params(clParse(ac, av));
@@ -197,22 +214,46 @@ int main(int ac, char* av[])
 	try {
 		// Creates object of ImagePrepartion class 
 		// 4 paths to xml datasets are being passed as arguments for the class constructor
-		PREP imprepPtr = (PREP)GetProcAddress(dllFile, "Preparation");
-
+	        #if defined(_WIN32) || (_WIN64)	
+                PREP imprepPtr = (PREP)GetProcAddress(dllFile, "Preparation");
+               
 		// Initializes imported class from dll
-		GenericPreparation* genPrep = imprepPtr(params.at("faces"),
+		GenericPreparation* genPrep = imprepPtr(
+                        params.at("faces"),
 			params.at("eyes"),
 			params.at("noses"),
 			params.at("mouths"),
 			params.at("directory"),
 			{ ".jpeg", ".jpg", ".png" },
-			atoi(params.at("threads").c_str()));
+			atoi(params.at("threads").c_str())
+                );
 
 		// The main process has been launched. It executes images analyzing and processing of them.
 		// In the end of its work it saves faces in their own files and outputs statistics into json file
 		genPrep->run();
 
 		delete genPrep;
+                #else
+                PREP* imprepPtr = (PREP*)dlsym(handle, "create");                      
+                if (!imprepPtr)
+                {
+                    cout<<"The error is %s"<<dlerror();
+                }
+               
+                GenericPreparation* genPrep = imprepPtr(
+                        params.at("faces"),
+			params.at("eyes"),
+			params.at("noses"),
+			params.at("mouths"),
+			params.at("directory"),
+			{ ".jpeg", ".jpg", ".png" },
+			atoi(params.at("threads").c_str())
+                );
+
+                genPrep->run();
+
+                dlclose(handle); 
+                #endif
 	}
 	catch (std::exception& e) {
 		cerr << "Error. The details are " << e.what() << endl;

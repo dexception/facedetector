@@ -82,44 +82,49 @@ void ImagePreparation::run() {
 	BOOST_LOG_TRIVIAL(info) << "The analysis has been started";
 
 	// Getting fullpaths where images can be found	
-	vector<string> & filePaths = this->getRecursiveFilepaths(this->faceDirPath, this->extensions);
+	vector<string> filePaths (this->getRecursiveFilepaths(this->faceDirPath, this->extensions));
 
 	// Shows how many pictures have been discovered
 	BOOST_LOG_TRIVIAL(info) << filePaths.size() << " files found";
-		
-	io_service ioService;
-	boost::thread_group threadpool; // threadpool
-	auto_ptr<io_service::work> work(new io_service::work(ioService)); // workers
 
+	io_service ioService;
+	boost::thread_group threadpool; // threadpool	
+	shared_ptr<io_service::work> work(new io_service::work(ioService)); // workers
+		 
 	ImageProcessing proc;
 
 	for (int i = 0; i < this->countThreads; i++)
 	{
-		threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));
+		threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));		
 	}
 
 	BOOST_LOG_TRIVIAL(debug) << this->countThreads << " threads are created ";
 
 	boost::mutex mutex;
 
-	for (vector<string>::iterator it = filePaths.begin(); it != filePaths.end(); ++it)
+    int i = 0;
+	 
+    for (auto it : filePaths) 
+    //for (vector<string>::iterator it = filePaths.begin(); it != filePaths.end(); ++it)
 	{
 		ioService.post(boost::bind(&ImageProcessing::detectAllElements,			
-			*it,
+			it,
 			this->getFaceDataset(),
 			this->getEyesdataset(),
 			this->getMouthdataset(),
 			this->getNoseDataset()
 			));
-
+		
 		boost::lock_guard<boost::mutex> guard(mutex);
 	}
-
+	
+	ioService.poll();
 	ioService.stop();
 
+	work.reset();
 	threadpool.join_all();
 
-	work.reset();
+	
 
 	// json output. result.json should be located together with the souce image in the same catalog
 	vector<string> paths = getUniqueFolders(filePaths);
@@ -250,6 +255,7 @@ vector<string> ImagePreparation::getRecursiveFilepaths(string dirPath, vector<st
 	return dirs;
 }
 
+#ifdef _MSC_VER
 // Binding declaration beween an execution file and the dll's classes and methods
 FACE_DETECTOR GenericPreparation* _cdecl Preparation(
 	string faceXMLDatasetFullPath,
@@ -270,3 +276,27 @@ FACE_DETECTOR GenericPreparation* _cdecl Preparation(
 		threads
 		);
 }
+#else
+    extern "C" ImagePreparation* create(
+	    string faceXMLDatasetFullPath,
+	    string eyesXMLDataSetFullPath,
+	    string noseXMLDataSetFullPath,
+	    string mouthXMLDataSetFullPath,
+	    string imageDirPath,
+	    vector<string> exts,
+	    int threads
+    )
+{
+	return new ImagePreparation(faceXMLDatasetFullPath, 
+		eyesXMLDataSetFullPath,
+		noseXMLDataSetFullPath,
+		mouthXMLDataSetFullPath,
+		imageDirPath,
+		exts,
+		threads
+		);
+}
+#endif
+
+
+

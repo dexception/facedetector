@@ -53,7 +53,7 @@ void ImageProcessing::detectAllElements(const string& imagePath,
 		
 	string path = imagePath;
 	detectFacialFeatures(image, path, faces, eyesDataset, noseDataset, mouthDataset);
-
+    //BOOST_LOG_TRIVIAL(info) << imagePath << " is being processed";
 	return;
 };
 
@@ -85,8 +85,11 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 		BOOST_LOG_TRIVIAL(info) << "No face is detected!!!!";
 		return;
 	}
-	else
-		incrementFoundFile(1);
+	else {
+		//atomic_int incCounter {1};
+		//incrementFoundFile(incCounter);
+		incrementFoundFile();
+	}
 
 	for (unsigned int i = 0; i < faces.size(); ++i)
 	{
@@ -420,9 +423,9 @@ void ImageProcessing::concatenateJsons(vector<string>& pathToJsons) {
 
 		// Save everything into result.json
 		boost::filesystem::path outputJson(jsonPath);
-		outputJson /= "result.json";
-		ofstream fp(outputJson.c_str(), ios::binary);		
-
+		outputJson /= "result.json";		
+		ofstream fp(outputJson.string(), ios::binary);		
+		
 		OStreamWrapper osw(fp);
 		Writer<OStreamWrapper> writer(osw);
 		docOutput.Accept(writer);
@@ -446,10 +449,13 @@ void ImageProcessing::removeTempJSONFiles(vector<string> temporaryFiles) {
 
 // Counts and returns prcessed correect file
 // Correct means a file where a face is found
-void ImageProcessing::incrementFoundFile(atomic_int value) {
-	foundFile += value;
+//void ImageProcessing::incrementFoundFile(atomic_int value) {
+void ImageProcessing::incrementFoundFile() {
+	//foundFile.emplace_back();
+	++foundFile;
+	
 }
 
-atomic_int ImageProcessing::getFoundFiles() {
+int ImageProcessing::getFoundFiles() {
 	return foundFile.load();
 }

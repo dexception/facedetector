@@ -4,12 +4,12 @@
 //
 
 #pragma once
-
+#if defined (_WIN32) || (_WIN64)
 #include "targetver.h"
 
 #include <stdio.h>
 #include <tchar.h>
-
+#endif
 
 
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы
