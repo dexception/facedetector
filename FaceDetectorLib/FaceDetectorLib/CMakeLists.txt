@@ -28,7 +28,11 @@ endif(UNIX)
 # else for windows assign through command line value of BOOST_LIBRARYDIR variable 
 
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_LIBS ON)
+
+if (WIN32 OR WIN64)
+  set(Boost_USE_STATIC_LIBS ON)
+endif(WIN32 OR WIN64)
+
 set(Boost_USE_STATIC_RUNTIME OFF)
 
 #find_package(Boost 1.60.0 COMPONENTS system filesystem log_setup log thread regex REQUIRED)
