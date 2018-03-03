@@ -2,20 +2,14 @@
 
 #include "stdafx.h"
 
-#if defined (_WIN32) || defined (_WIN64)
-	#ifdef SYS_TIME_DLL_EXPORTS
-	#define FACE_DETECTOR __declspec(dllexport)
+#if defined (_WIN32) || (_WIN64)
+	#ifdef DETECTOR_DLL_EXPORTS
+		#define FACE_DETECTOR __declspec(dllexport)
 	#else
-	#define FACE_DETECTOR __declspec(dllimport)
+		#define FACE_DETECTOR __declspec(dllimport)
 	#endif
-//#elif defined(__GNUC__)
-//    #define FACE_DETECTOR __attribute__((visibility("default")))
-//    #define FACE_DETECTOR
 #else
-//  need to analyze deeper the case building the solution by different complers
-    #define FACE_DETECTOR
-    #define FACE_DETECTOR
-    #pragma warning Unknown dynamic link import/export semantics.
+    #define FACE_DETECTOR    
 #endif
 
 #include "opencv2/highgui.hpp"

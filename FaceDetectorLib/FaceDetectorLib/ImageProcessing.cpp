@@ -86,12 +86,10 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 		return;
 	}
 	else {
-		//atomic_int incCounter {1};
-		//incrementFoundFile(incCounter);
 		incrementFoundFile();
 	}
 
-	for (unsigned int i = 0; i < faces.size(); ++i)
+	for (unsigned int i = 0; i < faces.size(); i++)
 	{
 		vector<string> facialCoordinates;
 
@@ -106,7 +104,6 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 		facialCoordinates.push_back(
 			(boost::format("%s;upper left x:%d;upper left y:%d;width:%d;height:%d") % "face" % face.x % face.y % face.width % face.height).str()
 			);
-
 
 		// Found face need to save into a separate file. 
 		string faceFileName = getFaceFileName(imageFile, i);
@@ -134,7 +131,7 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 				// Saving eyes coordinates			
 				facialCoordinates.push_back(
 					(boost::format("%s%d;upper left x:%d;upper left y:%d;width:%d;height:%d") % "eye" % j % e.x % e.y % e.width % e.height).str()
-					);
+				);
 			}
 		}
 
@@ -146,10 +143,9 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 			detectNose(ROI, nose, noseCascade);
 
 			// Mark points corresponding to the centre (tip) of the nose
-			for (unsigned int j = 0; j < nose.size(); ++j)
+			for (unsigned int j = 0; j < nose.size(); j++)
 			{
-				Rect n = nose[j];
-				//rectangle(ROI, Point(n.x, n.y), Point(n.x + n.width, n.y + n.height), Scalar(0, 255, 0), 1, 4);
+				Rect n = nose[j];				
 				noseCenterHeight = (n.y + n.height / 2);
 			}
 		}
@@ -161,7 +157,7 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 			vector<Rect_<int> > mouth;
 			detectMouth(ROI, mouth, mouthCascade);
 
-			for (unsigned int j = 0; j < mouth.size(); ++j)
+			for (unsigned int j = 0; j < mouth.size(); j++)
 			{
 				Rect m = mouth[j];
 				mouthCenterHeight = (m.y + m.height / 2);
@@ -175,8 +171,7 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 					continue;
 				else
 					rectangle(ROI, Point(m.x, m.y), Point(m.x + m.width, m.y + m.height), Scalar(0, 255, 0), 1, 4);
-
-				// Saving mouth coordinates				
+				
 				facialCoordinates.push_back(
 					(boost::format("%s;upper left x:%d;upper left y:%d;width:%d;height:%d") % "mouth" % m.x % m.y % m.width % m.height).str()
 					);
@@ -450,8 +445,7 @@ void ImageProcessing::removeTempJSONFiles(vector<string> temporaryFiles) {
 // Counts and returns prcessed correect file
 // Correct means a file where a face is found
 //void ImageProcessing::incrementFoundFile(atomic_int value) {
-void ImageProcessing::incrementFoundFile() {
-	//foundFile.emplace_back();
+void ImageProcessing::incrementFoundFile() {	
 	++foundFile;
 	
 }

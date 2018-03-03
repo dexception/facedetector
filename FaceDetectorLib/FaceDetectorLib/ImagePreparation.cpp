@@ -255,7 +255,7 @@ vector<string> ImagePreparation::getRecursiveFilepaths(string dirPath, vector<st
 	return dirs;
 }
 
-#ifdef _MSC_VER
+#if defined (_WIN32) || (_WIN64)
 // Binding declaration beween an execution file and the dll's classes and methods
 FACE_DETECTOR GenericPreparation* _cdecl Preparation(
 	string faceXMLDatasetFullPath,
@@ -297,6 +297,3 @@ FACE_DETECTOR GenericPreparation* _cdecl Preparation(
 		);
 }
 #endif
-
-
-

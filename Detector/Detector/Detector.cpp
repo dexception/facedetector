@@ -182,27 +182,27 @@ int main(int ac, char* av[])
 	cout << endl;
 	cout << endl;
 
-        #if defined (_WIN32) || (_WIN64)
-	TCHAR currentDir[MAX_PATH];
-	GetCurrentDirectory(sizeof(currentDir), currentDir);
+    #if defined (_WIN32) || (_WIN64)
+		TCHAR currentDir[MAX_PATH];
+		GetCurrentDirectoryW(sizeof(currentDir), currentDir);
+			
+		SetCurrentDirectoryW(currentDir);
 		
-	SetCurrentDirectory(currentDir);
-	
-	// Loads functions from imported dll	
-	HMODULE dllFile = LoadLibrary(L"FaceDetectorLib.dll");
-		
-	if (dllFile == NULL) {		
-		cout << "Can't find FaceDetectorLib.dll file. Exit!" << endl;
-		return 1;
-	}
-        #else
+		// Loads functions from imported dll	
+		HMODULE dllFile = LoadLibraryW(L"FaceDetectorLib.dll");
+			
+		if (dllFile == NULL) {		
+			cout << "Can't find FaceDetectorLib.dll file. Exit!" << endl;
+			return 1;
+		}
+    #else
         void* handle = dlopen("./libFaceDetectorLib.so", RTLD_LAZY); 
 	
         if (!handle) {		
-		cout << "Can't find libFaceDetectorLib.so file. Exit!" << endl;
-		return 1;
-	}
-        #endif
+			cout << "Can't find libFaceDetectorLib.so file. Exit!" << endl;
+			return 1;
+		}
+    #endif
 			
 	//Parses command line arguments and pushes it to map
 	map<string, string> params(clParse(ac, av));
