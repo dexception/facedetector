@@ -62,12 +62,11 @@ For instance, you need to make some survey about pictures in `C:\pictures` by le
 # Technical information
 ## Libraries and tools
 During the implementation development I used the next tools and frameworks:
-* __OS__: Microsoft Windows 8.1
-* __IDE__/__compiler__: Microsoft Visual Studio 2015
+* __OS__: Microsoft Windows 8.1 / Ubuntu 17.10
+* __IDE__/__compiler__: Microsoft Visual Studio 2015 / GCC 7
 * __Additional libraries__: 
   - boost 1.60.0
-  - opencv 3.2
-  - rapidjson 1.1.0
+  - opencv 3.2  
 * __WinAPI__: a couple of WinApi functions were leveraged during call functions from DLL file.
 
 ## Main components of the solution
