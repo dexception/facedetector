@@ -94,8 +94,7 @@ void ImagePreparation::run() {
 		 
 	ImageProcessing proc;
 
-	for (int i = 0; i < this->countThreads; i++)
-	{
+	for (int i = 0; i < this->countThreads; i++) {
 		threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));		
 	}
 
@@ -104,21 +103,9 @@ void ImagePreparation::run() {
 	// json output. result.json should be located together with the souce image in the same catalog
 	vector<string> imagesDirName = getImagesDirName(filePaths);
 	
-	// JSON file initialization. An opening curly bracket is inserted
-	for (auto imageDir : imagesDirName) {		
-		boost::filesystem::path pathTemporaryFile(imageDir);			
-		pathTemporaryFile /= "result.json";
-		
-		std::ofstream ofs(pathTemporaryFile.c_str(), ios_base::app);
-		ofs << "{" << endl;
-
-		ofs.close();
-	}
-
 	boost::mutex mutex;
 		    
-    for (auto it : filePaths)     
-	{
+    for (auto it : filePaths) {
 		ioService.post(boost::bind(&ImageProcessing::detectAllElements,			
 			it,
 			this->getFaceDataset(),
@@ -156,6 +143,8 @@ void ImagePreparation::run() {
 		lines.at(lines.size()-1) = lastString;		
 		
 		std::ofstream ofs(pathTemporaryFile.c_str());
+		
+		ofs << "{" << endl;
 		
 		for (auto it : lines) {
 			ofs << it << endl;			
@@ -260,28 +249,7 @@ vector<string> ImagePreparation::getRecursiveFilepaths(string dirPath, vector<st
 	return dirs;
 }
 
-#if defined (_WIN32) || (_WIN64)
-// Binding declaration beween an execution file and the dll's classes and methods
-FACE_DETECTOR GenericPreparation* _cdecl Preparation(
-	string faceXMLDatasetFullPath,
-	string eyesXMLDataSetFullPath,
-	string noseXMLDataSetFullPath,
-	string mouthXMLDataSetFullPath,
-	string imageDirPath,
-	vector<string> exts,
-	int threads
-	)
-{
-	return new ImagePreparation(faceXMLDatasetFullPath, 
-		eyesXMLDataSetFullPath,
-		noseXMLDataSetFullPath,
-		mouthXMLDataSetFullPath,
-		imageDirPath,
-		exts,
-		threads
-		);
-}
-#else
+#if defined(__unix__) || defined(__unix)
     extern "C" ImagePreparation* create(
 	    string faceXMLDatasetFullPath,
 	    string eyesXMLDataSetFullPath,
@@ -301,4 +269,25 @@ FACE_DETECTOR GenericPreparation* _cdecl Preparation(
 		threads
 		);
 }
+#else
+    // Binding declaration beween an execution file and the dll's classes and methods
+    FACE_DETECTOR GenericPreparation* _cdecl Preparation(
+    	string faceXMLDatasetFullPath,
+    	string eyesXMLDataSetFullPath,
+    	string noseXMLDataSetFullPath,
+    	string mouthXMLDataSetFullPath,
+    	string imageDirPath,
+    	vector<string> exts,
+    	int threads
+    	)
+    {
+    	return new ImagePreparation(faceXMLDatasetFullPath, 
+    		eyesXMLDataSetFullPath,
+    		noseXMLDataSetFullPath,
+    		mouthXMLDataSetFullPath,
+    		imageDirPath,
+    		exts,
+    		threads
+    		);
+    }
 #endif

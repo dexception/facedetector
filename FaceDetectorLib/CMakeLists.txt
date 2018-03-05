@@ -16,13 +16,10 @@ SET(CMAKE_INSTALL_PREFIX  ${CMAKE_CURRENT_SOURCE_DIR}/../)
 if (WIN32 OR WIN64)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
   add_definitions(-DDETECTOR_DLL_EXPORTS)
+  add_definitions(-D_UNICODE)
 endif()
 
 if (UNIX)
-    #set(BOOST_ROOT "/usr/local")
-    #set(BOOST_INCLUDE_DIR "${BOOST_ROOT}/include/boost")
-    #set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
-    #set(Boost_ALL_DYN_LINK ON)
     add_definitions(-DBOOST_LOG_DYN_LINK=1)
 endif(UNIX)
 # else for windows assign through command line value of BOOST_LIBRARYDIR variable 
@@ -44,7 +41,6 @@ LINK_DIRECTORIES(${OpenCV_LIB_DIR})
 
 if (Boost_FOUND)
   include_directories (SYSTEM ${Boost_INCLUDE_DIR})  
-  #add_definitions(-Wall -O2)  
   add_definitions(-Wall)  
   include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${OpenCV_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${OpenCV_MAIN_PATH} ./include)
 

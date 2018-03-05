@@ -180,9 +180,8 @@ void ImageProcessing::detectFacialFeatures(Mat& img, const string imageFile, con
 
 	BOOST_LOG_TRIVIAL(info) << "File " << imageFile << " processing is complete. Found " << faces.size() << " faces";
 
-	//Need to save faceData content into a separate tmp file
-	//Each file should be created where the file is located
-	// Saving the face's elements details into a json file
+	//Need to save faceData content into a json file
+	//Each file should be created where the file is located	
 	getFacesDetailsIntoFile(imageFile, faceData);
 
 	return;
